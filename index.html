@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+
+    <title>V2 Weather API</title>
+
+    <style>
+      .title {
+        font-size: 30px;
+        font-weight: bold;
+        max-width: 800px;
+        margin-left: 102px;
+        margin-top: 30px;
+      }
+      .container {
+        background: white;
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 30px;
+        border-radius: 10px;
+      }
+      body {
+        background: #fcf5e5;
+        font-family: "Courier New", Courier, monospace;
+      }
+      .search-input {
+        background-color: #f9f7fe;
+        border: none;
+        color: rgba(39, 33, 66, 0.4);
+        font-size: 16px;
+        padding: 20px;
+        width: 86%;
+        border-radius: 6px;
+      }
+      .button {
+        margin-left: 5px;
+        font-size: 16px;
+        background-color: #885df1;
+        color: white;
+        border: none;
+        padding: 20px;
+        line-height: 1;
+        border-radius: 5px;
+      }
+      main {
+        padding: 30px 0;
+      }
+      .current-weather {
+        display: flex;
+        justify-content: space-between;
+      }
+      .current-city {
+        font-size: 38px;
+        font-weight: 900;
+        margin: 0;
+      }
+
+      .temperature {
+        font-size: 48px;
+        margin-right: 12px;
+      }
+      .temperature-value {
+        font-size: 80px;
+        font-weight: bold;
+        position: relative;
+        right: -25px;
+      }
+
+      .temperature-unit {
+        font-size: 28px;
+        font-weight: bold;
+        position: relative;
+        top: -38px;
+      }
+      footer {
+        border-top: 1px solid #f9f7fe;
+        text-align: center;
+        padding-top: 15px;
+
+        color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="title">API Revision</div>
+
+    <div class="container">
+      <form id="search-form">
+        <input
+          type="search"
+          placeholder="Enter a city"
+          required
+          class="search-input"
+          id="search-input"
+        />
+
+        <input type="submit" value="Search" class="button" />
+      </form>
+      <main>
+        <div class="current-weather">
+          <div class="city-date">
+            <h1 class="current-city" id="current-city">Kuala Lumpur</h1>
+            <h2 class="now"></h2>
+            <h3></h3>
+          </div>
+          <div class="temperature">
+            <span class="temperature-value" id="temperature-value">24</span>
+            <span class="temperature-unit">°C</span>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <footer>
+      <p>
+        This project was coded by
+        <a href="#" target="_blank">Zaidah Yunos</a> and is
+        <a href="#" target="_blank"> on GitHub</a> and
+        <a href="#" target="_blank">hosted on Netlify</a>
+      </p>
+    </footer>
+
+    <script>
+      let now = new Date();
+
+      let date = now.getDate();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      let year = now.getFullYear();
+
+      let days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+
+      let day = days[now.getDay()];
+
+      let months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      let month = months[now.getMonth()];
+
+      let h2 = document.querySelector("h2");
+      h2.innerHTML = `${day}, ${date} ${month} ${year}, ${hours}:${minutes}`;
+
+      function displayTemperature(response) {
+        let temperatureElement = document.querySelector("#temperature-value");
+        let temperature = Math.round(response.data.temperature.current);
+        let cityElement = document.querySelector("#current-city");
+        cityElement.innerHTML = response.data.city;
+        temperatureElement.innerHTML = temperature;
+      }
+
+      function search(event) {
+        event.preventDefault();
+        let searchInputElement = document.querySelector("#search-input");
+        let city = searchInputElement.value;
+
+        let apiKey = "b2a5adcct04b33178913oc335f405433";
+        let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+
+        axios.get(apiUrl).then(displayTemperature);
+      }
+
+      let searchForm = document.querySelector("#search-form");
+      searchForm.addEventListener("submit", search);
+    </script>
+  </body>
+</html>
